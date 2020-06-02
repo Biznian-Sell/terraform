@@ -379,6 +379,13 @@ func TestRsaDecrypt(t *testing.T) {
 			cty.StringVal("message"),
 			false,
 		},
+		// OpenSSH key format
+		{
+			cty.StringVal(CipherBase64),
+			cty.StringVal(OpenSSHPrivateKey),
+			cty.StringVal("message"),
+			false,
+		},
 		// Wrong key
 		{
 			cty.StringVal(CipherBase64),
@@ -699,6 +706,35 @@ OLlRAoGBAIZ5Uv4Z3s8O7WKXXUe/lq6j7vfiVkR1NW/Z/WLKXZpnmvJ7FgxN4e56
 RXT7GwNQHIY8eDjDnsHxzrxd+raOxOZeKcMHj3XyjCX3NHfTscnsBPAGYpY/Wxzh
 T8UYnFu6RzkixElTf2rseEav7rkdKkI3LAeIZy7B0HulKKsmqVQ7
 -----END RSA PRIVATE KEY-----
+`
+	OpenSSHPrivateKey = `
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAQEAgUElV5mwqkloIrM8ZNZ72gSCcnSJt7+/Usa5G+D15YQUAdf9c1zE
+ekTfHgDP+04nw/uFNFaE5v1RbHaPxhZYVg5ZErNCa/hzn+x10xzcepeS3KPVXcxae4MR0B
+EegvqZqJzN9loXsNL/c3H/B+2Gle3hTxjlWFb3F5qLgR+4Mf4ruhER1v6eHQa/nchi03MB
+pT4UeJ7MrL92hTJYLdpSyCqmr8yjxkKJDVC2uRrr+sTSxfh7r6v24u/vp/QTmBIAlNPgad
+VAZw17iNNb7vjV7Gwl/5gHXonCUKURaV++dBNLrHIZpqcAM8wHRph8mD1EfL9hsz77pHew
+xolBATV+7QAAA7jbhEFk24RBZAAAAAdzc2gtcnNhAAABAQCBQSVXmbCqSWgiszxk1nvaBI
+JydIm3v79Sxrkb4PXlhBQB1/1zXMR6RN8eAM/7TifD+4U0VoTm/VFsdo/GFlhWDlkSs0Jr
++HOf7HXTHNx6l5Lco9VdzFp7gxHQER6C+pmonM32Whew0v9zcf8H7YaV7eFPGOVYVvcXmo
+uBH7gx/iu6ERHW/p4dBr+dyGLTcwGlPhR4nsysv3aFMlgt2lLIKqavzKPGQokNULa5Guv6
+xNLF+Huvq/bi7++n9BOYEgCU0+Bp1UBnDXuI01vu+NXsbCX/mAdeicJQpRFpX750E0usch
+mmpwAzzAdGmHyYPUR8v2GzPvukd7DGiUEBNX7tAAAAAwEAAQAAAQAtayvpBVt76wGJt/vP
+30J0EMOZ3nOKOvnK54OiVUFy3h99ql0oTX/JCyxvyY9L2mHEzzw2cPSQipEzENJio/V0f+
+Qy2wTLFenjV17rySd8eIiluXg/VpCw+BSpTWqwUcju4/LHz06l1u7mrTcVnRR+2LEkbzYf
+/ackBy1gOTorbonTK2G3NxFMfAdRjzcifVvEPM5zWC38GDo1OFr9UixOqhkEB/UNFswNll
+H/I5JQmMjGEyMsAIxm/JGwCZSoZo9rdiII5qrcLdT2HKRpam7UAQ1Ill7eUuGF/9ZmiEP+
+PcnjVGo46WyYh9w24SWx8BU8z96WfT/Rhzs5RpGEfsEhAAAAgQCGeVL+Gd7PDu1il11Hv5
+auo+734lZEdTVv2f1iyl2aZ5ryexYMTeHuekV0+xsDUByGPHg4w57B8c68Xfq2jsTmXinD
+B4918owl9zR307HJ7ATwBmKWP1sc4U/FGJxbukc5IsRJU39q7HhGr+65HSpCNywHiGcuwd
+B7pSirJqlUOwAAAIEAw/Xida8kSv8n86V3qSY/I+fYQ5V+jDtXIE+JhRnS8xzbOzz3v0WS
+Oo5H+o4nJx5eL3Ghb3Gcm0Jn46dHrxinHbm+3RjXv/X6tlbxIYjRSQfHOTSMCTvdqcliF5
+vC6RCLXuc7R+IWR1Ky6eDEZGtrvt3DyeYABsp9fRUFR/6NluUAAACBAKjbMNWkpe1iWtux
+dA6CXZVPS1nq6V3Gs5SXCHTs/0vUA5kit0Q0E3an08UZq8YmCPSxLJpDpL85Z5zgTKZ2d2
+TlOaiEX6a3nESIt+ygwDh1hp5QtBFhoJeOmC2+/414ln9ABmPg3ySTXfYuk2yA1rvNueP3
+qwEumyjIVv96u39pAAAAAAEC
+-----END OPENSSH PRIVATE KEY-----
 `
 	WrongPrivateKey = `
 -----BEGIN RSA PRIVATE KEY-----

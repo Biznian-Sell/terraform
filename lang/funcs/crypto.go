@@ -6,10 +6,8 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
-	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/pem"
 	"fmt"
 	"hash"
 
@@ -19,6 +17,7 @@ import (
 	"github.com/zclconf/go-cty/cty/function"
 	"github.com/zclconf/go-cty/cty/gocty"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/crypto/ssh"
 )
 
 var UUIDFunc = function.New(&function.Spec{
@@ -155,24 +154,18 @@ var RsaDecryptFunc = function.New(&function.Spec{
 			return cty.UnknownVal(cty.String), fmt.Errorf("failed to decode input %q: cipher text must be base64-encoded", s)
 		}
 
-		block, _ := pem.Decode([]byte(key))
-		if block == nil {
-			return cty.UnknownVal(cty.String), fmt.Errorf("failed to parse key: no key found")
+		rawKey, err := ssh.ParseRawPrivateKey([]byte(key))
+		if err != nil {
+			return cty.UnknownVal(cty.String), fmt.Errorf("failed to parse key: %s", err)
 		}
-		if block.Headers["Proc-Type"] == "4,ENCRYPTED" {
-			return cty.UnknownVal(cty.String), fmt.Errorf(
-				"failed to parse key: password protected keys are not supported. Please decrypt the key prior to use",
-			)
+		privateKey, ok := rawKey.(*rsa.PrivateKey)
+		if !ok {
+			return cty.UnknownVal(cty.String), fmt.Errorf("failed to parse key: invalid key type %t", rawKey)
 		}
 
-		x509Key, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+		out, err := rsa.DecryptPKCS1v15(nil, privateKey, b)
 		if err != nil {
-			return cty.UnknownVal(cty.String), err
-		}
-
-		out, err := rsa.DecryptPKCS1v15(nil, x509Key, b)
-		if err != nil {
-			return cty.UnknownVal(cty.String), err
+			return cty.UnknownVal(cty.String), fmt.Errorf("failed to decrypt: %s", err)
 		}
 
 		return cty.StringVal(string(out)), nil

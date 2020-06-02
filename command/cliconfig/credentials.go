@@ -12,7 +12,7 @@ import (
 	"github.com/zclconf/go-cty/cty"
 	ctyjson "github.com/zclconf/go-cty/cty/json"
 
-	"github.com/hashicorp/terraform-svchost"
+	svchost "github.com/hashicorp/terraform-svchost"
 	svcauth "github.com/hashicorp/terraform-svchost/auth"
 	"github.com/hashicorp/terraform/configs/hcl2shim"
 	pluginDiscovery "github.com/hashicorp/terraform/plugin/discovery"
@@ -152,6 +152,9 @@ type CredentialsSource struct {
 var _ svcauth.CredentialsSource = (*CredentialsSource)(nil)
 
 func (s *CredentialsSource) ForHost(host svchost.Hostname) (svcauth.HostCredentials, error) {
+	if s == nil {
+		return nil, nil
+	}
 	v, ok := s.configured[host]
 	if ok {
 		return svcauth.HostCredentialsFromObject(v), nil
@@ -178,6 +181,9 @@ func (s *CredentialsSource) ForgetForHost(host svchost.Hostname) error {
 // The current location of credentials determines whether updates are possible
 // at all and, if they are, where any updates will be written.
 func (s *CredentialsSource) HostCredentialsLocation(host svchost.Hostname) CredentialsLocation {
+	if s == nil {
+		return CredentialsNotAvailable
+	}
 	if _, unwritable := s.unwritable[host]; unwritable {
 		return CredentialsInOtherFile
 	}
@@ -201,12 +207,18 @@ func (s *CredentialsSource) HostCredentialsLocation(host svchost.Hostname) Crede
 // directory, so this function will return an error in the unlikely event that
 // we cannot determine a suitable home directory to resolve relative to.
 func (s *CredentialsSource) CredentialsFilePath() (string, error) {
+	if s == nil {
+		return "", nil
+	}
 	return s.credentialsFilePath, nil
 }
 
 // CredentialsHelperType returns the name of the configured credentials helper
 // type, or an empty string if no credentials helper is configured.
 func (s *CredentialsSource) CredentialsHelperType() string {
+	if s == nil {
+		return ""
+	}
 	return s.helperType
 }
 
@@ -237,6 +249,9 @@ func (s *CredentialsSource) updateLocalHostCredentials(host svchost.Hostname, ne
 	// This function updates the local credentials file in particular,
 	// regardless of whether a credentials helper is active. It should be
 	// called only indirectly via updateHostCredentials.
+	if s == nil {
+		return nil
+	}
 
 	filename, err := s.CredentialsFilePath()
 	if err != nil {

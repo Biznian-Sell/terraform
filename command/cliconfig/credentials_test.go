@@ -10,7 +10,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/zclconf/go-cty/cty"
 
-	"github.com/hashicorp/terraform-svchost"
+	svchost "github.com/hashicorp/terraform-svchost"
 	svcauth "github.com/hashicorp/terraform-svchost/auth"
 )
 
@@ -85,6 +85,40 @@ func TestCredentialsForHost(t *testing.T) {
 			t.Errorf("wrong result\ngot:  %s\nwant: %s", got, want)
 		}
 	})
+}
+
+func TestCredentialsNilReceiver(t *testing.T) {
+	var credSrc *CredentialsSource
+
+	creds, err := credSrc.ForHost(svchost.Hostname("configured.example.com"))
+	if creds != nil {
+		t.Errorf("unexpected creds: %#v", creds)
+	}
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
+
+	err = credSrc.StoreForHost(
+		svchost.Hostname("manually-configured.example.com"),
+		svcauth.HostCredentialsToken("not-manually-configured"),
+	)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
+
+	loc := credSrc.HostCredentialsLocation(
+		svchost.Hostname("manually-configured.example.com"),
+	)
+	if loc != CredentialsNotAvailable {
+		t.Errorf("unexpected location: %#v", loc)
+	}
+
+	err = credSrc.ForgetForHost(
+		svchost.Hostname("manually-configured.example.com"),
+	)
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+	}
 }
 
 func TestCredentialsStoreForget(t *testing.T) {
